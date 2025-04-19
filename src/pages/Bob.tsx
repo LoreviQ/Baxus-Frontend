@@ -12,7 +12,7 @@ const Bob = () => {
 
     return (
         <div className="h-full flex justify-center">
-            <div className="max-w-4xl w-full border-l border-r border-white flex flex-col h-full">
+            <div className="max-w-2xl w-full border-l border-r border-zinc-700 flex flex-col h-full">
                 <MessagesContentComponent />
             </div>
         </div>
@@ -24,6 +24,7 @@ export default Bob;
 const MessagesContentComponent = () => {
     const [username, setUsername] = useState<string | null>(null);
     const [messages, setMessages] = useState<MessageSchema[]>([]);
+    const [threads, setThreads] = useState<ThreadScema[]>([]);
     const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
     const [messagesLoading, setMessagesLoading] = useState(false);
     const [messageSending, setMessageSending] = useState(false);
@@ -32,29 +33,21 @@ const MessagesContentComponent = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    // Load messages when username and thread are set
+    // Load messages when currentThreadId changes
     useEffect(() => {
-        const loadMessages = async () => {
+        const loadThreadMessages = async () => {
             if (!username) return;
+
+            if (!currentThreadId) {
+                setMessages([]);
+                return;
+            }
 
             setMessagesLoading(true);
             try {
-                // First get user's threads
-                const threadsResponse = await api.get(endpoints.users.threads(username));
-                console.log('Threads:', threadsResponse.data);
-                const threads: ThreadScema[] = threadsResponse.data.threads;
-
-                if (threads && threads.length > 0) {
-                    const threadId = threads[0]._id;
-                    setCurrentThreadId(threadId);
-
-                    // Then get messages for the first thread
-                    const messagesResponse = await api.get(endpoints.threads.messages(threadId));
-                    console.log('Messages:', messagesResponse.data);
-                    setMessages(messagesResponse.data.messages || []);
-                } else {
-                    setMessages([]);
-                }
+                const messagesResponse = await api.get(endpoints.threads.messages(currentThreadId));
+                console.log('Messages:', messagesResponse.data);
+                setMessages(messagesResponse.data.messages || []);
             } catch (error) {
                 console.error('Failed to load messages:', error);
                 setStatusMessage('Failed to load messages. Please try again.');
@@ -63,7 +56,29 @@ const MessagesContentComponent = () => {
             }
         };
 
-        loadMessages();
+        loadThreadMessages();
+    }, [currentThreadId, username]);
+
+    // Modify the initial useEffect to only load threads, not messages
+    useEffect(() => {
+        const loadThreads = async () => {
+            if (!username) return;
+
+            try {
+                const threadsResponse = await api.get(endpoints.users.threads(username));
+                console.log('Threads:', threadsResponse.data);
+                const threads: ThreadScema[] = threadsResponse.data.threads;
+                setThreads(threads);
+                if (threads && threads.length > 0) {
+                    setCurrentThreadId(threads[0]._id);
+                }
+            } catch (error) {
+                console.error('Failed to load threads:', error);
+                setStatusMessage('Failed to load threads. Please try again.');
+            }
+        };
+
+        loadThreads();
     }, [username]);
 
     const sendMessage = async (content: string) => {
@@ -88,6 +103,13 @@ const MessagesContentComponent = () => {
             if (!currentThreadId && newBobMessage.thread_id) {
                 setCurrentThreadId(newBobMessage.thread_id);
                 newUserMessage.thread_id = newBobMessage.thread_id;
+                // Add the new thread to the threads state
+                const newThread: ThreadScema = {
+                    _id: newBobMessage.thread_id,
+                    username: username || '',
+                    created_at: new Date().toISOString(),
+                };
+                setThreads(prev => [newThread, ...prev]);
             }
 
             setMessages(prev => [...prev, newUserMessage, newBobMessage]);
@@ -184,6 +206,12 @@ const MessagesContentComponent = () => {
 
     return (
         <div className="flex flex-col h-full">
+            <ChatHeader
+                username={username}
+                threads={threads}
+                currentThreadId={currentThreadId}
+                setCurrentThreadId={setCurrentThreadId}
+            />
             <div className="flex-1 overflow-hidden">
                 <div className="h-full overflow-y-auto p-4 flex flex-col-reverse">
                     {statusMessage ? (
@@ -254,5 +282,45 @@ function ChatMessage({ message }: ChatMessageProps) {
                 </div>
             </div>
         </div>
+    );
+}
+
+interface ChatHeaderProps {
+    username: string | null;
+    threads: ThreadScema[];
+    currentThreadId: string | null;
+    setCurrentThreadId: (threadId: string | null) => void;
+}
+function ChatHeader({ username, threads, currentThreadId, setCurrentThreadId }: ChatHeaderProps) {
+    return (
+        <>
+            {username && (
+                <div className="sticky top-0 z-10 backdrop-blur-md bg-black/70 border-b border-zinc-700">
+                    <div className="flex items-center justify-between px-4 py-2">
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={currentThreadId || ''}
+                                onChange={e => setCurrentThreadId(e.target.value || null)}
+                                className="bg-transparent text-white border border-zinc-600 rounded px-2 py-1 text-sm focus:border-white focus:outline-none"
+                            >
+                                <option value="">New Thread</option>
+                                {threads.map(thread => (
+                                    <option key={thread._id} value={thread._id}>
+                                        Thread {thread._id.slice(0, 8)}...
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                onClick={() => setCurrentThreadId(null)}
+                                className="w-6 h-6 flex items-center justify-center text-white border border-zinc-600 rounded hover:border-white transition-colors duration-200"
+                                title="New Thread"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
