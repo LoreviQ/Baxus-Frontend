@@ -10,6 +10,19 @@ const Header = () => {
                         BAXATHON
                     </h1>
                 </div>
+                <div className="absolute bottom-0 w-full px-16 py-2 flex justify-between text-white font-bold text-xl z-10">
+                    <div>
+                        <a href="https://oliver.tj" className="hover:text-yellow-700">
+                            By Oliver Jay
+                        </a>
+                    </div>
+                    <a
+                        href="https://github.com/LoreviQ/Baxus-Frontend"
+                        className="hover:text-yellow-700"
+                    >
+                        GitHub Repository
+                    </a>
+                </div>
             </div>
             <nav className="text-white p-4 flex gap-4">
                 <NavLink
