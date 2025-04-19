@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-export function Header() {
+export default function Header() {
     return (
         <header className="bg-black">
             <Hero />
@@ -37,7 +37,7 @@ function Hero() {
 
 function TabBar() {
     return (
-        <nav className="text-white p-4 flex gap-4">
+        <nav className="text-white flex w-full max-w-3xl mx-auto justify-between">
             <NavLink
                 to="/whiskeygoggles"
                 className={({ isActive }) =>
