@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '/api';
 const API_VERSION = '/v1';
 
 export const api = axios.create({
@@ -12,12 +12,12 @@ export const api = axios.create({
 
 export const endpoints = {
     messages: {
-        messages: `/${API_VERSION}/messages/`,
+        messages: `${API_VERSION}/messages/`,
     },
     threads: {
-        messages: (threadId: string) => `/${API_VERSION}/threads/${threadId}/messages`,
+        messages: (threadId: string) => `${API_VERSION}/threads/${threadId}/messages`,
     },
     users: {
-        threads: (username: string) => `/${API_VERSION}/users/${username}/threads`,
+        threads: (username: string) => `${API_VERSION}/users/${username}/threads`,
     },
 };

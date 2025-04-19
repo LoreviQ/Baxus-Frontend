@@ -1,7 +1,13 @@
 export type MessageSchema = {
-    id: string;
+    _id: string;
     thread_id: string;
-    sender_type: 'user' | 'character';
+    sender_type: 'user' | 'BOB';
     content: string;
+    created_at: string;
+};
+
+export type ThreadScema = {
+    _id: string;
+    username: string;
     created_at: string;
 };
