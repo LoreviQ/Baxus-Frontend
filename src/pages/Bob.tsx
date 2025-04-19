@@ -69,20 +69,28 @@ const MessagesContentComponent = () => {
     const sendMessage = async (content: string) => {
         setMessageSending(true);
         try {
+            const newUserMessage: MessageSchema = {
+                _id: crypto.randomUUID(),
+                thread_id: currentThreadId || '',
+                sender_type: 'user',
+                content,
+                created_at: new Date().toISOString(),
+            };
             const payload = {
                 username,
                 thread: currentThreadId,
                 content,
             };
             console.log('Sending message:', payload);
-            const response = await api.post(endpoints.messages.messages);
+            const response = await api.post(endpoints.messages.messages, payload);
 
-            const newMessage = response.data.message;
-            if (!currentThreadId && newMessage.thread_id) {
-                setCurrentThreadId(newMessage.thread_id);
+            const newBobMessage = response.data.message;
+            if (!currentThreadId && newBobMessage.thread_id) {
+                setCurrentThreadId(newBobMessage.thread_id);
+                newUserMessage.thread_id = newBobMessage.thread_id;
             }
 
-            setMessages(prev => [...prev, newMessage]);
+            setMessages(prev => [...prev, newUserMessage, newBobMessage]);
         } catch (error) {
             console.error('Failed to send message:', error);
             throw error;
