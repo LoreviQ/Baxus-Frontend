@@ -11,8 +11,8 @@ const Bob = () => {
     }, []);
 
     return (
-        <div className="flex justify-center h-full">
-            <div className="max-w-4xl w-full border-l border-r border-white">
+        <div className="h-full flex justify-center">
+            <div className="max-w-4xl w-full border-l border-r border-white flex flex-col h-full">
                 <MessagesContentComponent />
             </div>
         </div>
@@ -183,23 +183,25 @@ const MessagesContentComponent = () => {
     }
 
     return (
-        <div className="flex flex-col flex-1 h-full">
-            {/* Messages container */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col-reverse">
-                <div>
+        <div className="flex flex-col h-full">
+            <div className="flex-1 overflow-hidden">
+                <div className="h-full overflow-y-auto p-4 flex flex-col-reverse">
                     {statusMessage ? (
                         <div className="flex justify-center items-center text-zinc-500">
                             {statusMessage}
                         </div>
                     ) : (
-                        messages.map(message => <ChatMessage key={message._id} message={message} />)
+                        <>
+                            <div ref={messagesEndRef} />
+                            {[...messages].reverse().map(message => (
+                                <ChatMessage key={message._id} message={message} />
+                            ))}
+                        </>
                     )}
-                    <div ref={messagesEndRef} />
                 </div>
             </div>
 
-            {/* Input field */}
-            <div className="p-4 border-t border-zinc-700">
+            <div className="flex-shrink-0 p-4 border-t border-zinc-700 bg-black">
                 <div className="relative group w-full">
                     <textarea
                         ref={textareaRef}
@@ -208,12 +210,12 @@ const MessagesContentComponent = () => {
                             setInputValue(e.target.value);
                             // Auto-resize the textarea
                             e.target.style.height = 'auto';
-                            e.target.style.height = `${e.target.scrollHeight}px`;
+                            e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
                         }}
                         onKeyDown={handleKeyDown}
                         rows={1}
                         disabled={messageSending}
-                        className="w-full bg-black border border-zinc-600 rounded-xl py-2 pr-10 pl-4 text-white placeholder-zinc-400 focus:border-white focus:outline-none transition-colors duration-200 resize-none overflow-hidden disabled:opacity-50"
+                        className="w-full bg-black border border-zinc-600 rounded-xl py-2 pr-10 pl-4 text-white placeholder-zinc-400 focus:border-white focus:outline-none transition-colors duration-200 resize-none overflow-y-auto max-h-[200px]"
                     />
                     <button
                         onClick={handleSendMessage}

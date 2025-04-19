@@ -6,9 +6,9 @@ import HoneyBarrel from './pages/HoneyBarrel';
 
 function App() {
     return (
-        <div className="min-h-screen flex flex-col text-white">
+        <div className="min-h-screen h-screen flex flex-col text-white">
             <Header />
-            <main className="bg-black flex-1">
+            <main className="bg-black flex-1 overflow-hidden">
                 <Routes>
                     <Route path="/" element={<Navigate to="/whiskeygoggles" replace />} />
                     <Route path="/whiskeygoggles" element={<WhiskeyGoggles />} />
