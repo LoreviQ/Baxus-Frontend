@@ -24,7 +24,7 @@ function Hero() {
 
 function TabBar() {
     return (
-        <nav className="text-white flex w-full justify-between px-16">
+        <nav className="text-white flex w-full justify-between px-16 border-b border-white">
             <a
                 href="https://oliver.tj"
                 className="hover:text-yellow-700 flex items-center font-bold"
@@ -53,8 +53,8 @@ function NavButton({ to, text }: { to: string; text?: string }) {
                 to={to}
                 className={({ isActive }) => `
                 flex px-4 py-4 items-center justify-center min-w-40 rounded-t-lg 
-                font-bold text-white
-                ${isActive ? 'bg-stone-800' : ''} hover:bg-yellow-700/50
+                font-bold text-white border-white
+                ${isActive ? 'border-l border-r border-t ' : ''} hover:border-l hover:border-r hover:border-t
             `}
             >
                 {text}

@@ -8,7 +8,7 @@ function App() {
     return (
         <div className="min-h-screen flex flex-col text-white">
             <Header />
-            <main className="bg-stone-800 flex-1">
+            <main className="bg-black flex-1">
                 <Routes>
                     <Route path="/" element={<Navigate to="/whiskeygoggles" replace />} />
                     <Route path="/whiskeygoggles" element={<WhiskeyGoggles />} />
