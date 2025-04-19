@@ -10,8 +10,10 @@ const Bob = () => {
     }, []);
 
     return (
-        <div className="p-4">
-            <MessagesContentComponent />
+        <div className="flex justify-center h-full">
+            <div className="max-w-4xl w-full border-l border-r border-white">
+                <MessagesContentComponent />
+            </div>
         </div>
     );
 };
