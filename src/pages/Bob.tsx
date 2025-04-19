@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
+
 const Bob = () => {
+  useEffect(() => {
+    document.title = 'BOB';
+  }, []);
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Bob Page</h1>
