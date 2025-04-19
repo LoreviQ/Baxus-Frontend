@@ -38,30 +38,26 @@ function Hero() {
 function TabBar() {
     return (
         <nav className="text-white flex w-full max-w-3xl mx-auto justify-between">
-            <NavLink
-                to="/whiskeygoggles"
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded hover:bg-gray-700 ${isActive ? 'bg-gray-700' : ''}`
-                }
-            >
-                Whiskey Goggles
-            </NavLink>
-            <NavLink
-                to="/bob"
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded hover:bg-gray-700 ${isActive ? 'bg-gray-700' : ''}`
-                }
-            >
-                Bob
-            </NavLink>
-            <NavLink
-                to="/honeybarrel"
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded hover:bg-gray-700 ${isActive ? 'bg-gray-700' : ''}`
-                }
-            >
-                Honey Barrel
-            </NavLink>
+            <NavButton to="/whiskeygoggles" text="Whiskey Goggles" />
+            <NavButton to="/bob" text="Bob" />
+            <NavButton to="/honeybarrel" text="Honey Barrel" />
         </nav>
+    );
+}
+
+function NavButton({ to, text }: { to: string; text?: string }) {
+    return (
+        <div className="flex">
+            <NavLink
+                to={to}
+                className={({ isActive }) => `
+                flex px-4 py-4 items-center justify-center min-w-40 rounded-t-lg 
+                font-bold text-white
+                ${isActive ? 'bg-stone-800' : ''} hover:bg-yellow-700/50
+            `}
+            >
+                {text}
+            </NavLink>
+        </div>
     );
 }
