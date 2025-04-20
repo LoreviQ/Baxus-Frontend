@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 interface MarkdownContentProps {
@@ -13,39 +14,50 @@ function processHashtags(content: string): string {
 
 export function MarkdownContent({ content, className = '' }: MarkdownContentProps) {
     const processedContent = processHashtags(content);
-    // Split content by newlines and filter out empty lines
-    const contentSections = processedContent.split('\n').filter(section => section.trim() !== '');
 
     return (
-        <div className="flex flex-col gap-2">
-            {contentSections.map((section, index) => (
-                <ReactMarkdown
-                    key={index}
-                    components={{
-                        p: ({ children }) => (
-                            <p
-                                className={`whitespace-pre-wrap prose prose-invert prose-sm max-w-none ${className}`}
-                            >
+        <div className="markdown-content">
+            <ReactMarkdown
+                components={{
+                    p: ({ children }) => (
+                        <p
+                            className={`whitespace-pre-wrap prose prose-invert prose-sm max-w-none ${className}`}
+                        >
+                            {children}
+                        </p>
+                    ),
+                    a: ({ href, children }) => (
+                        <a href={href} className="text-sky-500 hover:underline">
+                            {children}
+                        </a>
+                    ),
+                    ol: ({ children }) => (
+                        <ol className="list-decimal list-outside ml-6 space-y-2 [&_ol]:mt-1 [&_ul]:mt-1">
+                            {children}
+                        </ol>
+                    ),
+                    ul: ({ children }) => (
+                        <ul className="list-disc list-outside ml-6 space-y-1 [&_ol]:mt-1 [&_ul]:mt-1">
+                            {children}
+                        </ul>
+                    ),
+                    li: ({ children }) => {
+                        const hasNestedList = React.Children.toArray(children).some(
+                            child =>
+                                React.isValidElement(child) &&
+                                'type' in child &&
+                                (child.type === 'ul' || child.type === 'ol')
+                        );
+                        return (
+                            <li className={`pl-2 ${hasNestedList ? 'space-y-1' : ''}`}>
                                 {children}
-                            </p>
-                        ),
-                        a: ({ href, children }) => (
-                            <a href={href} className="text-sky-500 hover:underline">
-                                {children}
-                            </a>
-                        ),
-                        ol: ({ children }) => (
-                            <ol className="list-decimal list-outside ml-6 space-y-2">{children}</ol>
-                        ),
-                        ul: ({ children }) => (
-                            <ul className="list-disc list-outside ml-6 space-y-1">{children}</ul>
-                        ),
-                        li: ({ children }) => <li className="pl-2">{children}</li>,
-                    }}
-                >
-                    {section}
-                </ReactMarkdown>
-            ))}
+                            </li>
+                        );
+                    },
+                }}
+            >
+                {processedContent}
+            </ReactMarkdown>
         </div>
     );
 }
