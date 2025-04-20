@@ -34,6 +34,13 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
                                 {children}
                             </a>
                         ),
+                        ol: ({ children }) => (
+                            <ol className="list-decimal list-outside ml-6 space-y-2">{children}</ol>
+                        ),
+                        ul: ({ children }) => (
+                            <ul className="list-disc list-outside ml-6 space-y-1">{children}</ul>
+                        ),
+                        li: ({ children }) => <li className="pl-2">{children}</li>,
                     }}
                 >
                     {section}

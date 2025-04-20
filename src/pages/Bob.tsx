@@ -12,7 +12,7 @@ const Bob = () => {
 
     return (
         <div className="h-full flex justify-center">
-            <div className="max-w-2xl w-full border-l border-r border-zinc-700 flex flex-col h-full bg-black/50 backdrop-blur-md">
+            <div className="max-w-4xl w-full border-l border-r border-zinc-700 flex flex-col h-full bg-black/50 backdrop-blur-md">
                 <MessagesContentComponent />
             </div>
         </div>
