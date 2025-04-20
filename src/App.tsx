@@ -6,7 +6,7 @@ import HoneyBarrel from './pages/HoneyBarrel';
 
 function App() {
     return (
-        <div className="min-h-screen h-screen flex flex-col text-white  bg-[url('/bob.png')] bg-cover bg-center bg-no-repeat">
+        <div className="min-h-screen h-screen flex flex-col text-white bg-[url('/bob.png')] bg-cover bg-center bg-no-repeat">
             <Header />
             <main className="flex-1 overflow-hidden">
                 <Routes>
