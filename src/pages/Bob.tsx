@@ -105,6 +105,7 @@ function MessagesContentComponent() {
                 thread: currentThreadId,
                 content,
             };
+            setMessages(prev => [...prev, newUserMessage]);
             console.log('Sending message:', payload);
             const response = await api.post(endpoints.messages.messages, payload);
 
@@ -121,7 +122,7 @@ function MessagesContentComponent() {
                 setThreads(prev => [newThread, ...prev]);
             }
 
-            setMessages(prev => [...prev, newUserMessage, newBobMessage]);
+            setMessages(prev => [...prev, newBobMessage]);
         } catch (error) {
             console.error('Failed to send message:', error);
             throw error;
