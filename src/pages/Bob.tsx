@@ -5,7 +5,11 @@ import { MarkdownContent } from '../components/MarkdownContent';
 import { formatFriendlyDate } from '../utils/date';
 import { api, endpoints } from '../utils/api';
 
-const Bob = () => {
+const defaultMessage = `Hello! I'm BOB, the BAXUS Outstanding Butler, your friendly whiskey expert and AI assistant within the BAXUS ecosystem. I noticed you've been building up a fascinating virtual bar!
+
+If you're open to it, I'd love to analyze your current collection. I can then provide personalized recommendations for new bottles based on your apparent preferences. Think of me as your guide to discovering your next favorite dram!`;
+
+export default function Bob() {
     useEffect(() => {
         document.title = 'BOB';
     }, []);
@@ -17,11 +21,9 @@ const Bob = () => {
             </div>
         </div>
     );
-};
+}
 
-export default Bob;
-
-const MessagesContentComponent = () => {
+function MessagesContentComponent() {
     const [username, setUsername] = useState<string | null>(null);
     const [messages, setMessages] = useState<MessageSchema[]>([]);
     const [threads, setThreads] = useState<ThreadScema[]>([]);
@@ -39,7 +41,14 @@ const MessagesContentComponent = () => {
             if (!username) return;
 
             if (!currentThreadId) {
-                setMessages([]);
+                const initialMessage: MessageSchema = {
+                    _id: crypto.randomUUID(),
+                    thread_id: '',
+                    sender_type: 'BOB',
+                    content: defaultMessage,
+                    created_at: new Date().toISOString(),
+                };
+                setMessages([initialMessage]);
                 return;
             }
 
@@ -256,7 +265,7 @@ const MessagesContentComponent = () => {
             </div>
         </div>
     );
-};
+}
 
 interface ChatMessageProps {
     message: MessageSchema;
