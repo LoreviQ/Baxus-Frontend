@@ -108,7 +108,7 @@ function App() {
                 {' '}
                 {/* Ensure content stays above backgrounds */}
                 <Routes>
-                    <Route path="/" element={<Navigate to="/whiskeygoggles" replace />} />
+                    <Route path="/" element={<Navigate to="/bob" replace />} />
                     <Route path="/whiskeygoggles" element={<WhiskeyGoggles />} />
                     <Route path="/bob" element={<Bob />} />
                     <Route path="/honeybarrel" element={<HoneyBarrel />} />

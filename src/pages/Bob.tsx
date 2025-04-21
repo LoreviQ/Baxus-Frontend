@@ -55,7 +55,6 @@ function MessagesContentComponent() {
             setMessagesLoading(true);
             try {
                 const messagesResponse = await api.get(endpoints.threads.messages(currentThreadId));
-                console.log('Messages:', messagesResponse.data);
                 setMessages(messagesResponse.data.messages || []);
             } catch (error) {
                 console.error('Failed to load messages:', error);
@@ -75,7 +74,6 @@ function MessagesContentComponent() {
 
             try {
                 const threadsResponse = await api.get(endpoints.users.threads(username));
-                console.log('Threads:', threadsResponse.data);
                 const threads: ThreadScema[] = threadsResponse.data.threads;
                 setThreads(threads);
                 if (threads && threads.length > 0) {
@@ -106,7 +104,6 @@ function MessagesContentComponent() {
                 content,
             };
             setMessages(prev => [...prev, newUserMessage]);
-            console.log('Sending message:', payload);
             const response = await api.post(endpoints.messages.messages, payload);
 
             const newBobMessage = response.data.message;
