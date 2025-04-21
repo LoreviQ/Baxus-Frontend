@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
             '/api': {
                 target:
                     mode === 'production'
-                        ? 'YOUR_PRODUCTION_BACKEND_URL' // TODO: Replace with your actual production backend URL
+                        ? 'https://baxus-bob-1037939514360.europe-west1.run.app/'
                         : 'http://localhost:3000',
                 changeOrigin: true,
             },
