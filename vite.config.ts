@@ -16,4 +16,18 @@ export default defineConfig(({ mode }) => ({
             },
         },
     },
+    build: {
+        sourcemap: true,
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                // Preserve console.logs for debugging
+                pure_funcs: [],
+                keep_fnames: true,
+            },
+            mangle: {
+                keep_fnames: true,
+            },
+        },
+    },
 }));

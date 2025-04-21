@@ -271,6 +271,7 @@ interface ChatMessageProps {
 
 function ChatMessage({ message }: ChatMessageProps) {
     const isCharacter = message.sender_type === 'BOB';
+    const messageContent = message?.content || '';
 
     return (
         <div className={`flex ${isCharacter ? 'justify-end' : 'justify-start'} mb-4`}>
@@ -281,7 +282,7 @@ function ChatMessage({ message }: ChatMessageProps) {
                         : 'bg-blue-800 text-white before:absolute before:content-[""] before:w-4 before:h-4 before:bg-blue-800 before:-bottom-2 before:left-2 before:skew-x-[-35deg] before:rounded-br-lg'
                 }`}
             >
-                <MarkdownContent content={message.content} className="break-words" />
+                <MarkdownContent content={messageContent} className="break-words" />
                 <div
                     className={`text-xs text-zinc-400 mt-1 ${isCharacter ? 'text-left' : 'text-right'}`}
                 >
@@ -298,7 +299,12 @@ interface ChatHeaderProps {
     currentThreadId: string | null;
     setCurrentThreadId: (threadId: string | null) => void;
 }
-function ChatHeader({ username, threads, currentThreadId, setCurrentThreadId }: ChatHeaderProps) {
+function ChatHeader({
+    username,
+    threads = [],
+    currentThreadId,
+    setCurrentThreadId,
+}: ChatHeaderProps) {
     return (
         <>
             {username && (
@@ -311,7 +317,7 @@ function ChatHeader({ username, threads, currentThreadId, setCurrentThreadId }: 
                                 className="bg-transparent text-white border border-zinc-600 rounded px-2 py-1 text-sm focus:border-white focus:outline-none"
                             >
                                 <option value="">New Thread</option>
-                                {threads.map(thread => (
+                                {(threads || []).map(thread => (
                                     <option key={thread._id} value={thread._id}>
                                         Thread {thread._id.slice(0, 8)}...
                                     </option>

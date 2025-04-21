@@ -8,11 +8,12 @@ interface MarkdownContentProps {
 
 // Function to convert hashtags to markdown links
 function processHashtags(content: string): string {
+    if (!content) return '';
     // Match hashtags that start with # and contain letters, numbers, and underscores
     return content.replace(/#(\w+)/g, '[$&](/search?hashtag=$1)');
 }
 
-export function MarkdownContent({ content, className = '' }: MarkdownContentProps) {
+export function MarkdownContent({ content = '', className = '' }: MarkdownContentProps) {
     const processedContent = processHashtags(content);
 
     return (
