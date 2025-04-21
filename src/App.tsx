@@ -7,10 +7,16 @@ import HoneyBarrel from './pages/HoneyBarrel';
 
 function App() {
     const location = useLocation();
-    const [currentBg, setCurrentBg] = useState(''); // The background image currently displayed
+    // State to track loading completion for smoother transitions
+    const [medLoaded, setMedLoaded] = useState(false);
+    const [highLoaded, setHighLoaded] = useState(false);
+    // State to hold the current image paths
+    const [imagePaths, setImagePaths] = useState({ low: '', med: '', high: '' });
 
     useEffect(() => {
-        let isMounted = true; // Flag to track if the effect cleanup has run
+        let isMounted = true;
+        setMedLoaded(false); // Reset loading states on route change
+        setHighLoaded(false);
 
         // Determine image set based on route
         const isWhiskeyGoggles = location.pathname === '/whiskeygoggles';
@@ -18,53 +24,89 @@ function App() {
         const medRes = isWhiskeyGoggles ? '/bob-WG.webp' : '/bob.webp';
         const highRes = isWhiskeyGoggles ? '/bob-WG-high.webp' : '/bob-high.webp';
 
-        // 1. Set low-res immediately
-        setCurrentBg(lowRes);
+        // Update image paths state
+        setImagePaths({ low: lowRes, med: medRes, high: highRes });
 
-        // Create image objects outside handlers for cleanup access
+        // Preload medium resolution
         const medImg = new Image();
-        const highImg = new Image();
-
-        // 2. Load medium-res
         medImg.onload = () => {
-            if (!isMounted) return; // Don't update if effect re-ran or component unmounted
-            setCurrentBg(medRes);
-
-            // 3. Load high-res *after* medium has loaded and been set
-            highImg.src = highRes;
-            highImg.onload = () => {
-                if (!isMounted) return; // Don't update if effect re-ran or component unmounted
-                setCurrentBg(highRes);
-            };
-            highImg.onerror = () => {
-                if (isMounted) console.error('Failed to load high-res image:', highRes);
-            };
+            if (isMounted) {
+                setMedLoaded(true);
+                // Preload high resolution *after* medium is loaded
+                const highImg = new Image();
+                highImg.onload = () => {
+                    if (isMounted) {
+                        setHighLoaded(true);
+                    }
+                };
+                highImg.onerror = () => {
+                    if (isMounted) console.error('Failed to load high-res image:', highRes);
+                };
+                highImg.src = highRes;
+            }
         };
         medImg.onerror = () => {
             if (isMounted) console.error('Failed to load medium-res image:', medRes);
         };
+        medImg.src = medRes; // Start loading medium
 
-        // Start loading medium resolution image
-        medImg.src = medRes;
-
-        // Cleanup function: runs when component unmounts or location.pathname changes
+        // Cleanup
         return () => {
-            isMounted = false; // Mark as unmounted/stale
-            // Prevent state updates from ongoing loads by removing handlers
-            medImg.onload = null;
-            medImg.onerror = null;
-            highImg.onload = null;
-            highImg.onerror = null;
+            isMounted = false;
+            // No need to clear image handlers as new Image() objects are created each time
         };
-    }, [location.pathname]); // Re-run effect only when the route changes
+    }, [location.pathname]);
+
+    const bgStyleBase: React.CSSProperties = {
+        position: 'absolute',
+        inset: 0, // Equivalent to top: 0, right: 0, bottom: 0, left: 0
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        transition: 'opacity 0.5s ease-in-out', // Smooth fade-in
+    };
 
     return (
-        <div
-            className="min-h-screen h-screen flex flex-col text-white bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url('${currentBg}')` }}
-        >
+        // Main container is now relative to position the absolute background divs
+        // Removed background style from here
+        <div className="relative min-h-screen h-screen flex flex-col text-white">
+            {/* Background Layers */}
+            {imagePaths.low && (
+                <div
+                    style={{
+                        ...bgStyleBase,
+                        backgroundImage: `url('${imagePaths.low}')`,
+                        opacity: 1, // Always visible
+                        zIndex: -3, // Lowest layer
+                    }}
+                />
+            )}
+            {imagePaths.med && (
+                <div
+                    style={{
+                        ...bgStyleBase,
+                        backgroundImage: `url('${imagePaths.med}')`,
+                        opacity: medLoaded ? 1 : 0, // Fade in when loaded
+                        zIndex: -2, // Middle layer
+                    }}
+                />
+            )}
+            {imagePaths.high && (
+                <div
+                    style={{
+                        ...bgStyleBase,
+                        backgroundImage: `url('${imagePaths.high}')`,
+                        opacity: highLoaded ? 1 : 0, // Fade in when loaded
+                        zIndex: -1, // Top layer
+                    }}
+                />
+            )}
+
+            {/* Content */}
             <Header />
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1 overflow-hidden z-0">
+                {' '}
+                {/* Ensure content stays above backgrounds */}
                 <Routes>
                     <Route path="/" element={<Navigate to="/whiskeygoggles" replace />} />
                     <Route path="/whiskeygoggles" element={<WhiskeyGoggles />} />
