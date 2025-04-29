@@ -4,10 +4,13 @@ import { RightArrowIcon } from '../assets/icons';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { formatFriendlyDate } from '../utils/date';
 import { bobApi, endpoints } from '../utils/api';
+import { TitleLink } from '../components/TitleLink';
 
 const defaultMessage = `Hello! I'm BOB, the BAXUS Outstanding Butler, your friendly whiskey expert and AI assistant within the BAXUS ecosystem. I noticed you've been building up a fascinating virtual bar!
 
 If you're open to it, I'd love to analyze your current collection. I can then provide personalized recommendations for new bottles based on your apparent preferences. Think of me as your guide to discovering your next favorite dram!`;
+
+const repoUrl = 'https://github.com/LoreviQ/Baxus-Bob';
 
 export default function Bob() {
     useEffect(() => {
@@ -188,25 +191,34 @@ function MessagesContentComponent() {
 
     if (!username) {
         return (
-            <div className="flex flex-col items-center justify-center h-full p-4">
-                <div className="max-w-md w-full">
-                    <h2 className="text-xl font-bold mb-4 text-center">
-                        Enter your username to start chatting
-                    </h2>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            className="w-full bg-black border border-zinc-600 rounded-xl py-2 px-4 text-white placeholder-zinc-400 focus:border-white focus:outline-none transition-colors duration-200"
-                            placeholder="Username"
-                            onKeyDown={e => {
-                                if (e.key === 'Enter') {
-                                    const value = e.currentTarget.value.trim();
-                                    if (value) {
-                                        setUsername(value);
+            <div className="flex flex-col h-full p-4">
+                {/* Center TitleLink horizontally at the top */}
+                <div className="w-full flex justify-center mb-6 pt-4">
+                    <TitleLink href={repoUrl}>BOB</TitleLink>
+                </div>
+                {/* Center remaining content vertically and horizontally, offset slightly higher */}
+                <div className="flex flex-col items-center justify-center flex-grow pb-16">
+                    {' '}
+                    {/* Added pb-16 to push content up */}
+                    <div className="max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4 text-center">
+                            Enter your username to start chatting
+                        </h2>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                className="w-full bg-black border border-zinc-600 rounded-xl py-2 px-4 text-white placeholder-zinc-400 focus:border-white focus:outline-none transition-colors duration-200"
+                                placeholder="Username"
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        const value = e.currentTarget.value.trim();
+                                        if (value) {
+                                            setUsername(value);
+                                        }
                                     }
-                                }
-                            }}
-                        />
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

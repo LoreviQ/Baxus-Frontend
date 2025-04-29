@@ -1,26 +1,7 @@
 import { useEffect, useState, ChangeEvent, useRef } from 'react';
-// Import the new health check function
 import { predictImage, checkWhiskeyGogglesHealth } from '../utils/api';
 import { PredictionResponse } from '../types/predictions';
-
-// --- Extracted Components ---
-
-interface TitleLinkProps {
-    href: string;
-    children: React.ReactNode;
-}
-
-// Component for the title link with hover effect
-const TitleLink: React.FC<TitleLinkProps> = ({ href, children }) => (
-    <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-3xl font-bold mb-6 hover:text-yellow-300 transition-colors duration-200 ease-in-out"
-    >
-        {children}
-    </a>
-);
+import { TitleLink } from '../components/TitleLink';
 
 interface HealthCheckStatusProps {
     isChecking: boolean;
