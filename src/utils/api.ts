@@ -41,3 +41,15 @@ export async function predictImage(image: File): Promise<PredictionResponse> {
         throw error;
     }
 }
+
+export async function checkWhiskeyGogglesHealth(): Promise<boolean> {
+    try {
+        // Use a simple GET request to the root or a dedicated health endpoint if available
+        const response = await axios.get('http://127.0.0.1:5000/');
+        // Check if the status code is in the 2xx range
+        return response.status >= 200 && response.status < 300;
+    } catch (error) {
+        console.error('Whiskey Goggles service health check failed:', error);
+        return false; // Service is likely down or unreachable
+    }
+}
