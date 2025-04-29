@@ -3,7 +3,7 @@ import { MessageSchema, ThreadScema } from '../types/messages';
 import { RightArrowIcon } from '../assets/icons';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { formatFriendlyDate } from '../utils/date';
-import { api, endpoints } from '../utils/api';
+import { bobApi, endpoints } from '../utils/api';
 
 const defaultMessage = `Hello! I'm BOB, the BAXUS Outstanding Butler, your friendly whiskey expert and AI assistant within the BAXUS ecosystem. I noticed you've been building up a fascinating virtual bar!
 
@@ -54,7 +54,9 @@ function MessagesContentComponent() {
 
             setMessagesLoading(true);
             try {
-                const messagesResponse = await api.get(endpoints.threads.messages(currentThreadId));
+                const messagesResponse = await bobApi.get(
+                    endpoints.threads.messages(currentThreadId)
+                );
                 setMessages(messagesResponse.data.messages || []);
             } catch (error) {
                 console.error('Failed to load messages:', error);
@@ -73,7 +75,7 @@ function MessagesContentComponent() {
             if (!username) return;
 
             try {
-                const threadsResponse = await api.get(endpoints.users.threads(username));
+                const threadsResponse = await bobApi.get(endpoints.users.threads(username));
                 const threads: ThreadScema[] = threadsResponse.data.threads;
                 setThreads(threads);
                 if (threads && threads.length > 0) {
@@ -104,7 +106,7 @@ function MessagesContentComponent() {
                 content,
             };
             setMessages(prev => [...prev, newUserMessage]);
-            const response = await api.post(endpoints.messages.messages, payload);
+            const response = await bobApi.post(endpoints.messages.messages, payload);
 
             const newBobMessage = response.data.message;
             if (!currentThreadId && newBobMessage.thread_id) {
